@@ -1,0 +1,48 @@
+<div class="trip-form-container">
+    <h2>{{ isEditMode ? 'Edit Trip' : 'Create New Trip' }}</h2>
+
+    <div *ngIf="loading" class="loading">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <form *ngIf="!loading" [formGroup]="tripForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="name">Trip Name</label>
+            <input type="text" id="name" formControlName="name" class="form-control" placeholder="Give your trip a name">
+            <div *ngIf="tripForm.controls['name'].invalid && tripForm.controls['name'].touched" class="error-message">
+                <div *ngIf="tripForm.controls['name'].errors?.['required']">Trip name is required</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="startDate">Start Date</label>
+            <input type="date" id="startDate" formControlName="startDate" class="form-control">
+            <div *ngIf="tripForm.controls['startDate'].invalid && tripForm.controls['startDate'].touched" class="error-message">
+                <div *ngIf="tripForm.controls['startDate'].errors?.['required']">Start date is required</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="endDate">End Date</label>
+            <input type="date" id="endDate" formControlName="endDate" class="form-control">
+            <div *ngIf="tripForm.controls['endDate'].invalid && tripForm.controls['endDate'].touched" class="error-message">
+                <div *ngIf="tripForm.controls['endDate'].errors?.['required']">End date is required</div>
+                <div *ngIf="tripForm.controls['endDate'].errors?.['dateRange']">End date must be after start date</div>
+            </div>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger">
+            {{ errorMessage }}
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-outline-secondary" routerLink="/dashboard">Cancel</button>
+            <button type="submit" [disabled]="tripForm.invalid || loading" class="btn btn-primary">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                {{ isEditMode ? 'Update Trip' : 'Create Trip' }}
+            </button>
+        </div>
+    </form>
+</div>

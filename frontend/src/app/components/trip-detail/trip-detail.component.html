@@ -1,0 +1,213 @@
+<div class="trip-detail-container">
+    <div *ngIf="loading" class="loading">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <div *ngIf="!loading && trip">
+        <div class="trip-header">
+            <h2>{{ trip.name }}</h2>
+            <div class="trip-dates">
+                <i class="fas fa-calendar"></i>
+                {{ trip.startDate | date:'mediumDate' }} - {{ trip.endDate | date:'mediumDate' }}
+            </div>
+            <button class="btn btn-outline-secondary" routerLink="/dashboard">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+        </div>
+
+        <div class="tab-navigation">
+            <div class="tab" [class.active]="activeTab === 'overview'" (click)="changeTab('overview')">Overview</div>
+            <div class="tab" [class.active]="activeTab === 'destinations'" (click)="changeTab('destinations')">
+                Destinations ({{ destinations.length }})
+            </div>
+            <div class="tab" [class.active]="activeTab === 'accommodations'" (click)="changeTab('accommodations')">
+                Accommodations ({{ accommodations.length }})
+            </div>
+            <div class="tab" [class.active]="activeTab === 'recommendations'" (click)="changeTab('recommendations')">
+                AI Recommendations
+            </div>
+        </div>
+
+        <div [ngSwitch]="activeTab">
+            <div *ngSwitchCase="'overview'" class="tab-content">
+                <div class="trip-overview">
+                    <div class="overview-section">
+                        <h3>Trip Duration</h3>
+                        <p>{{ (trip.endDate | date:'shortDate') === (trip.startDate | date:'shortDate') ? '1 day' :
+                            ((trip.endDate | date:'number') - (trip.startDate | date:'number')) / (1000 * 60 * 60 * 24) + ' days' }}</p>
+                    </div>
+
+                    <div class="overview-section">
+                        <h3>Destinations</h3>
+                        <div *ngIf="destinations.length === 0" class="no-data">
+                            No destinations added yet. Go to the Destinations tab or AI Recommendations to add destinations.
+                        </div>
+                        <div *ngIf="destinations.length > 0" class="destinations-list">
+                            <div *ngFor="let destination of destinations" class="destination-item" (click)="viewDestination(destination.id!)">
+                                <div class="destination-name">{{ destination.city }}, {{ destination.country }}</div>
+                                <div class="destination-dates">
+                                    {{ destination.arrivalDate | date:'shortDate' }} - {{ destination.departureDate | date:'shortDate' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overview-section">
+                        <h3>Accommodations</h3>
+                        <div *ngIf="accommodations.length === 0" class="no-data">
+                            No accommodations booked yet. Go to the Accommodations tab to book accommodations.
+                        </div>
+                        <div *ngIf="accommodations.length > 0" class="accommodations-list">
+                            <div *ngFor="let accommodation of accommodations" class="accommodation-item">
+                                <div class="accommodation-name">{{ accommodation.name }}</div>
+                                <div class="accommodation-dates">
+                                    {{ accommodation.checkIn | date:'shortDate' }} - {{ accommodation.checkOut | date:'shortDate' }}
+                                </div>
+                                <div class="accommodation-status" [class.confirmed]="accommodation.confirmed" [class.pending]="!accommodation.confirmed">
+                                    {{ accommodation.confirmed ? 'Confirmed' : 'Pending' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngSwitchCase="'destinations'" class="tab-content">
+                <div class="destinations-section">
+                    <h3>Your Destinations</h3>
+                    <div *ngIf="destinations.length === 0" class="no-data">
+                        No destinations added yet. Get recommendations from the AI or add destinations manually.
+                    </div>
+                    <div *ngIf="destinations.length > 0" class="destinations-grid">
+                        <div *ngFor="let destination of destinations" class="destination-card" (click)="viewDestination(destination.id!)">
+                            <div class="destination-card-header">
+                                <h4>{{ destination.city }}, {{ destination.country }}</h4>
+                            </div>
+                            <div class="destination-card-content">
+                                <p>
+                                    <i class="fas fa-calendar"></i>
+                                    {{ destination.arrivalDate | date:'mediumDate' }} - {{ destination.departureDate | date:'mediumDate' }}
+                                </p>
+                                <p *ngIf="destination.activities && destination.activities.length > 0">
+                                    <i class="fas fa-hiking"></i>
+                                    {{ destination.activities.length }} activities planned
+                                </p>
+                            </div>
+                            <div class="destination-card-footer">
+                                <span class="view-details">Manage Destination ></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-outline-primary mt-4" (click)="changeTab('recommendations')">
+                        <i class="fas fa-lightbulb"></i> Get AI Recommendations
+                    </button>
+                </div>
+            </div>
+
+            <div *ngSwitchCase="'accommodations'" class="tab-content">
+                <div class="accommodations-section">
+                    <h3>Your Accommodations</h3>
+                    <div *ngIf="accommodations.length === 0" class="no-data">
+                        No accommodations booked yet.
+                    </div>
+                    <div *ngIf="accommodations.length > 0" class="accommodations-grid">
+                        <div *ngFor="let accommodation of accommodations" class="accommodation-card">
+                            <div class="accommodation-card-header">
+                                <h4>{{ accommodation.name }}</h4>
+                                <div class="accommodation-status" [class.confirmed]="accommodation.confirmed" [class.pending]="!accommodation.confirmed">
+                                    {{ accommodation.confirmed ? 'Confirmed' : 'Pending' }}
+                                </div>
+                            </div>
+                            <div class="accommodation-card-content">
+                                <p>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    {{ accommodation.address }}
+                                </p>
+                                <p>
+                                    <i class="fas fa-calendar"></i>
+                                    {{ accommodation.checkIn | date:'mediumDate' }} - {{ accommodation.checkOut | date:'mediumDate' }}
+                                </p>
+                                <p>
+                                    <i class="fas fa-tag"></i>
+                                    {{ accommodation.price | currency:accommodation.currency }}
+                                </p>
+                                <p *ngIf="accommodation.bookingReference">
+                                    <i class="fas fa-receipt"></i>
+                                    Booking ID: {{ accommodation.bookingReference }}
+                                </p>
+                            </div>
+                            <div class="accommodation-card-footer">
+                                <div *ngIf="accommodation.destination" class="destination-link">
+                                    {{ accommodation.destination.city }}, {{ accommodation.destination.country }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="add-accommodation-section">
+                        <h4 *ngIf="destinations.length === 0">Add destinations first to book accommodations</h4>
+                        <div *ngIf="destinations.length > 0">
+                            <h4>Book a new accommodation</h4>
+                            <p>Select a destination to add accommodations from the Destinations tab.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngSwitchCase="'recommendations'" class="tab-content">
+                <div class="recommendations-section">
+                    <h3>AI Travel Recommendations</h3>
+                    <div class="recommendation-form">
+                        <form [formGroup]="recommendationForm" (ngSubmit)="getRecommendations()">
+                            <div class="form-group">
+                                <label for="preferences">Tell us what you're looking for</label>
+                                <textarea
+                                        id="preferences"
+                                        formControlName="preferences"
+                                        class="form-control"
+                                        rows="3"
+                                        placeholder="E.g., I'm looking for a beach vacation with good nightlife, or I want to explore mountain hiking trails and local cuisine..."></textarea>
+                            </div>
+                            <button type="submit" [disabled]="recommendationForm.invalid || recommendationsLoading" class="btn btn-primary">
+                                <span *ngIf="recommendationsLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <i class="fas fa-magic"></i> Get Recommendations
+                            </button>
+                        </form>
+                    </div>
+
+                    <div *ngIf="recommendedDestinations.length > 0" class="recommended-destinations">
+                        <h4>Recommended Destinations</h4>
+                        <div class="destinations-grid">
+                            <div *ngFor="let destination of recommendedDestinations" class="destination-card">
+                                <div class="destination-card-header">
+                                    <h4>{{ destination.city }}, {{ destination.country }}</h4>
+                                </div>
+                                <div class="destination-card-content">
+                                    <p>
+                                        <i class="fas fa-calendar"></i>
+                                        Suggested dates:
+                                    </p>
+                                    <p>
+                                        {{ destination.arrivalDate | date:'mediumDate' }} - {{ destination.departureDate | date:'mediumDate' }}
+                                    </p>
+                                </div>
+                                <div class="destination-card-footer">
+                                    <button class="btn btn-outline-primary" (click)="addDestination(destination)">
+                                        <i class="fas fa-plus"></i> Add to Trip
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+    </div>
+</div>

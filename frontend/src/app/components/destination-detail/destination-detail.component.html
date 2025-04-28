@@ -1,0 +1,228 @@
+<div class="destination-detail-container">
+    <div *ngIf="loading" class="loading">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <div *ngIf="!loading && destination">
+        <div class="destination-header">
+            <h2>{{ destination.city }}, {{ destination.country }}</h2>
+            <div class="destination-dates">
+                <i class="fas fa-calendar"></i>
+                {{ destination.arrivalDate | date:'mediumDate' }} - {{ destination.departureDate | date:'mediumDate' }}
+            </div>
+            <button class="btn btn-outline-secondary" (click)="goBack()">
+                <i class="fas fa-arrow-left"></i> Back to Trip
+            </button>
+        </div>
+
+        <div class="tab-navigation">
+            <div class="tab" [class.active]="activeTab === 'overview'" (click)="changeTab('overview')">Overview</div>
+            <div class="tab" [class.active]="activeTab === 'activities'" (click)="changeTab('activities')">
+                Activities ({{ activities.length }})
+            </div>
+            <div class="tab" [class.active]="activeTab === 'accommodations'" (click)="changeTab('accommodations')">
+                Accommodations ({{ accommodations.length }})
+            </div>
+        </div>
+
+        <div [ngSwitch]="activeTab">
+            <div *ngSwitchCase="'overview'" class="tab-content">
+                <div class="destination-overview">
+                    <div class="overview-section">
+                        <h3>Stay Duration</h3>
+                        <p>{{ (destination.departureDate | date:'shortDate') === (destination.arrivalDate | date:'shortDate') ? '1 day' :
+                            ((destination.departureDate | date:'number') - (destination.arrivalDate | date:'number')) / (1000 * 60 * 60 * 24) + ' days' }}</p>
+                    </div>
+
+                    <div class="overview-section">
+                        <h3>Activities</h3>
+                        <div *ngIf="activities.length === 0" class="no-data">
+                            No activities planned yet. Go to the Activities tab to add activities.
+                        </div>
+                        <div *ngIf="activities.length > 0" class="activities-list">
+                            <div *ngFor="let activity of activities" class="activity-item">
+                                <div class="activity-name">{{ activity.name }}</div>
+                                <div class="activity-date">{{ activity.date | date:'shortDate' }}</div>
+                                <div class="activity-price">{{ activity.price | currency:activity.currency }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overview-section">
+                        <h3>Accommodations</h3>
+                        <div *ngIf="accommodations.length === 0" class="no-data">
+                            No accommodations booked yet. Go to the Accommodations tab to book accommodations.
+                        </div>
+                        <div *ngIf="accommodations.length > 0" class="accommodations-list">
+                            <div *ngFor="let accommodation of accommodations" class="accommodation-item">
+                                <div class="accommodation-name">{{ accommodation.name }}</div>
+                                <div class="accommodation-dates">
+                                    {{ accommodation.checkIn | date:'shortDate' }} - {{ accommodation.checkOut | date:'shortDate' }}
+                                </div>
+                                <div class="accommodation-status" [class.confirmed]="accommodation.confirmed" [class.pending]="!accommodation.confirmed">
+                                    {{ accommodation.confirmed ? 'Confirmed' : 'Pending' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngSwitchCase="'activities'" class="tab-content">
+                <div class="activities-section">
+                    <h3>Planned Activities</h3>
+                    <div *ngIf="activities.length === 0" class="no-data">
+                        No activities planned yet. Check out our recommendations below.
+                    </div>
+                    <div *ngIf="activities.length > 0" class="activities-grid">
+                        <div *ngFor="let activity of activities" class="activity-card">
+                            <div class="activity-card-header">
+                                <h4>{{ activity.name }}</h4>
+                            </div>
+                            <div class="activity-card-content">
+                                <p>
+                                    <i class="fas fa-calendar"></i>
+                                    {{ activity.date | date:'mediumDate' }}
+                                </p>
+                                <p>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    {{ activity.location || 'Location details not available' }}
+                                </p>
+                                <p>
+                                    <i class="fas fa-tag"></i>
+                                    {{ activity.price | currency:activity.currency }}
+                                </p>
+                                <div class="activity-description">
+                                    {{ activity.description }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="recommendedActivities.length > 0" class="recommended-activities">
+                        <h4>Recommended Activities</h4>
+                        <div class="activities-grid">
+                            <div *ngFor="let activity of recommendedActivities" class="activity-card">
+                                <div class="activity-card-header">
+                                    <h4>{{ activity.name }}</h4>
+                                </div>
+                                <div class="activity-card-content">
+                                    <p>
+                                        <i class="fas fa-calendar"></i>
+                                        {{ activity.date | date:'mediumDate' }}
+                                    </p>
+                                    <p>
+                                        <i class="fas fa-tag"></i>
+                                        {{ activity.price | currency:activity.currency }}
+                                    </p>
+                                    <div class="activity-description">
+                                        {{ activity.description }}
+                                    </div>
+                                </div>
+                                <div class="activity-card-footer">
+                                    <button class="btn btn-outline-primary" (click)="addActivity(activity)">
+                                        <i class="fas fa-plus"></i> Add to Itinerary
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngSwitchCase="'accommodations'" class="tab-content">
+                <div class="accommodations-section">
+                    <h3>Accommodations in {{ destination.city }}</h3>
+                    <div *ngIf="accommodations.length === 0" class="no-data">
+                        No accommodations booked yet for this destination.
+                    </div>
+                    <div *ngIf="accommodations.length > 0" class="accommodations-grid">
+                        <div *ngFor="let accommodation of accommodations" class="accommodation-card">
+                            <div class="accommodation-card-header">
+                                <h4>{{ accommodation.name }}</h4>
+                                <div class="accommodation-status" [class.confirmed]="accommodation.confirmed" [class.pending]="!accommodation.confirmed">
+                                    {{ accommodation.confirmed ? 'Confirmed' : 'Pending' }}
+                                </div>
+                            </div>
+                            <div class="accommodation-card-content">
+                                <p>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    {{ accommodation.address }}
+                                </p>
+                                <p>
+                                    <i class="fas fa-calendar"></i>
+                                    {{ accommodation.checkIn | date:'mediumDate' }} - {{ accommodation.checkOut | date:'mediumDate' }}
+                                </p>
+                                <p>
+                                    <i class="fas fa-tag"></i>
+                                    {{ accommodation.price | currency:accommodation.currency }}
+                                </p>
+                                <p *ngIf="accommodation.bookingReference">
+                                    <i class="fas fa-receipt"></i>
+                                    Booking ID: {{ accommodation.bookingReference }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="book-accommodation-section">
+                        <h4>Book a new accommodation</h4>
+                        <form [formGroup]="accommodationForm" (ngSubmit)="bookAccommodation()">
+                            <div class="form-group">
+                                <label for="name">Accommodation Name</label>
+                                <input type="text" id="name" formControlName="name" class="form-control" placeholder="Hotel name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <input type="text" id="address" formControlName="address" class="form-control" placeholder="Full address">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="checkIn">Check-in Date</label>
+                                    <input type="date" id="checkIn" formControlName="checkIn" class="form-control"
+                                           [min]="destination.arrivalDate" [max]="destination.departureDate">
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label for="checkOut">Check-out Date</label>
+                                    <input type="date" id="checkOut" formControlName="checkOut" class="form-control"
+                                           [min]="accommodationForm.controls['checkIn'].value || destination.arrivalDate"
+                                           [max]="destination.departureDate">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-8">
+                                    <label for="price">Price</label>
+                                    <input type="number" id="price" formControlName="price" class="form-control" min="0" step="0.01">
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label for="currency">Currency</label>
+                                    <select id="currency" formControlName="currency" class="form-control">
+                                        <option value="USD">USD</option>
+                                        <option value="EUR">EUR</option>
+                                        <option value="GBP">GBP</option>
+                                        <option value="JPY">JPY</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="submit" [disabled]="accommodationForm.invalid" class="btn btn-primary">
+                                <i class="fas fa-hotel"></i> Book Accommodation
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+    </div>
+</div>
