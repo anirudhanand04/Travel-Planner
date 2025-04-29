@@ -1,9 +1,9 @@
 package com.example.travel.planner.Service;
 
-import com.travelplanner.model.Activity;
-import com.travelplanner.model.Destination;
-import com.travelplanner.model.Trip;
-import com.travelplanner.model.User;
+import com.example.travel.planner.Model.Activity;
+import com.example.travel.planner.Model.Destination;
+import com.example.travel.planner.Model.Trip;
+import com.example.travel.planner.Model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

@@ -1,5 +1,18 @@
 package com.example.travel.planner.Service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.scheduling.annotation.Async;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import com.example.travel.planner.Model.Accommodation;
+import com.example.travel.planner.Model.Trip;
+import com.example.travel.planner.Model.Destination;
+import com.example.travel.planner.Respository.AccommodationRepository;
+import com.example.travel.planner.Respository.TripRepository;
+import com.example.travel.planner.Respository.DestinationRepository;
+
 @Service
 public class AccommodationService {
     @Autowired

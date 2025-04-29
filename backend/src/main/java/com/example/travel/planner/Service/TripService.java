@@ -1,5 +1,15 @@
 package com.example.travel.planner.Service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.util.Optional;
+import com.example.travel.planner.Model.Trip;
+import com.example.travel.planner.Model.User;
+import com.example.travel.planner.Respository.TripRepository;
+import com.example.travel.planner.Respository.UserRepository;
+
 @Service
 public class TripService {
     @Autowired

@@ -51,6 +51,10 @@ export class ApiService {
         return this.http.get<Activity[]>(`${this.apiUrl}/destinations/${destinationId}/activities/recommendations`);
     }
 
+    getDestinationById(id: number): Observable<Destination> {
+        return this.http.get<Destination>(`${this.apiUrl}/destinations/${id}`);
+    }
+
     // Accommodation endpoints
     getTripAccommodations(tripId: number): Observable<Accommodation[]> {
         return this.http.get<Accommodation[]>(`${this.apiUrl}/accommodations/trip/${tripId}`);

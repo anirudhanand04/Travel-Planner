@@ -1,6 +1,6 @@
 package com.example.travel.planner.Respository;
 
-import com.travelplanner.model.*;
+import com.example.travel.planner.Model.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

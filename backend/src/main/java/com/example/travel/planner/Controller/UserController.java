@@ -1,7 +1,7 @@
 package com.example.travel.planner.Controller;
 
-import com.travelplanner.model.*;
-import com.travelplanner.service.*;
+import com.example.travel.planner.Model.*;
+import com.example.travel.planner.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

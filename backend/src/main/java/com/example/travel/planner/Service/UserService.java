@@ -1,15 +1,12 @@
 package com.example.travel.planner.Service;
 
-import com.travelplanner.model.*;
-import com.travelplanner.repository.*;
+import com.example.travel.planner.Model.User;
+import com.example.travel.planner.Respository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 public class UserService {
@@ -18,6 +15,10 @@ public class UserService {
     
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+    
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
     }
     
     public User save(User user) {

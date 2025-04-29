@@ -1,5 +1,9 @@
 package com.example.travel.planner.Model;
 
+import jakarta.persistence.*;
+import lombok.Data;
+import java.time.LocalDate;
+
 @Entity
 @Data
 public class Activity {
