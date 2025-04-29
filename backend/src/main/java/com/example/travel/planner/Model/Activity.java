@@ -2,6 +2,7 @@ package com.example.travel.planner.Model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDate;
 
 @Entity
@@ -17,6 +18,7 @@ public class Activity {
     private Double price;
     private String currency;
     
+    @JsonIgnoreProperties("activities")
     @ManyToOne
     @JoinColumn(name = "destination_id")
     private Destination destination;

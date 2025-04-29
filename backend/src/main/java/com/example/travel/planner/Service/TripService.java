@@ -9,9 +9,13 @@ import com.example.travel.planner.Model.Trip;
 import com.example.travel.planner.Model.User;
 import com.example.travel.planner.Respository.TripRepository;
 import com.example.travel.planner.Respository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class TripService {
+    private static final Logger logger = LoggerFactory.getLogger(TripService.class);
+    
     @Autowired
     private TripRepository tripRepository;
     
@@ -24,10 +28,22 @@ public class TripService {
     
     @Transactional
     public Trip createTrip(Trip trip, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        logger.debug("Attempting to create trip for user ID: {}", userId);
+        
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (!userOptional.isPresent()) {
+            logger.error("Failed to create trip: User not found with ID: {}", userId);
+            throw new RuntimeException("User not found");
+        }
+        
+        User user = userOptional.get();
+        logger.debug("Found user: {} (ID: {})", user.getUsername(), user.getId());
+        
         trip.setUser(user);
-        return tripRepository.save(trip);
+        Trip savedTrip = tripRepository.save(trip);
+        logger.info("Successfully created trip with ID: {} for user: {}", savedTrip.getId(), user.getUsername());
+        
+        return savedTrip;
     }
     
     public Optional<Trip> findById(Long id) {

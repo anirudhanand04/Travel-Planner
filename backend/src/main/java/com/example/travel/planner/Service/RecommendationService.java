@@ -25,19 +25,6 @@ public class RecommendationService {
     }
     
     public List<Destination> recommendDestinations(User user, LocalDate startDate, LocalDate endDate, String preferences) {
-        // In a real application, this would call an external API
-        // For demonstration, we'll create some mock destinations
-        
-        // Simulate API call
-        // HttpHeaders headers = new HttpHeaders();
-        // headers.set("X-API-KEY", apiKey);
-        // HttpEntity<String> entity = new HttpEntity<>(headers);
-        // ResponseEntity<Map> response = restTemplate.exchange(
-        //     "https://api.example.com/recommendations?preferences=" + preferences, 
-        //     HttpMethod.GET, 
-        //     entity, 
-        //     Map.class
-        // );
         
         List<Destination> recommendations = new ArrayList<>();
         

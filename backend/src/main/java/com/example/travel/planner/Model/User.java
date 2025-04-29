@@ -2,12 +2,13 @@ package com.example.travel.planner.Model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "users")
 @Data
 public class User {
     @Id
@@ -17,6 +18,7 @@ public class User {
     private String email;
     private String password;
     
+    @JsonIgnoreProperties("user")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Trip> trips = new ArrayList<>();
 }
