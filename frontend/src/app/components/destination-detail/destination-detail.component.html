@@ -32,8 +32,7 @@
                 <div class="destination-overview">
                     <div class="overview-section">
                         <h3>Stay Duration</h3>
-                        <p>{{ (destination.departureDate | date:'shortDate') === (destination.arrivalDate | date:'shortDate') ? '1 day' :
-                            ((destination.departureDate | date:'number') - (destination.arrivalDate | date:'number')) / (1000 * 60 * 60 * 24) + ' days' }}</p>
+                        <p>Duration: {{ calculateDuration(destination.departureDate, destination.arrivalDate) }} days</p>
                     </div>
 
                     <div class="overview-section">

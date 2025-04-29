@@ -35,8 +35,7 @@
                 <div class="trip-overview">
                     <div class="overview-section">
                         <h3>Trip Duration</h3>
-                        <p>{{ (trip.endDate | date:'shortDate') === (trip.startDate | date:'shortDate') ? '1 day' :
-                            ((trip.endDate | date:'number') - (trip.startDate | date:'number')) / (1000 * 60 * 60 * 24) + ' days' }}</p>
+                        <p>Duration: {{ calculateDuration(trip.endDate, trip.startDate) }} days</p>
                     </div>
 
                     <div class="overview-section">

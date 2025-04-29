@@ -120,4 +120,15 @@ export class TripDetailComponent implements OnInit {
     changeTab(tab: string) {
         this.activeTab = tab;
     }
+
+    calculateDuration(endDate: string, startDate: string): number {
+        const end = new Date(endDate);
+        const start = new Date(startDate);
+        const diffTime = end.getTime() - start.getTime();
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+
+    goBack() {
+        // ... existing code ...
+    }
 }
