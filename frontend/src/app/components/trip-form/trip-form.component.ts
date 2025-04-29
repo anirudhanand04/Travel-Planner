@@ -48,6 +48,7 @@ export class TripFormComponent implements OnInit {
 
         if (start && end && new Date(start) > new Date(end)) {
             formGroup.controls['endDate'].setErrors({ dateRange: true });
+            return { dateRange: true };
         } else {
             return null;
         }

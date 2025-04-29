@@ -146,6 +146,13 @@ export class DestinationDetailComponent implements OnInit {
         this.activeTab = tab;
     }
 
+    calculateDuration(departureDate: string, arrivalDate: string): number {
+        const departure = new Date(departureDate);
+        const arrival = new Date(arrivalDate);
+        const diffTime = departure.getTime() - arrival.getTime();
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+
     goBack() {
         if (this.destination?.trip?.id) {
             this.router.navigate(['/trips', this.destination.trip.id]);

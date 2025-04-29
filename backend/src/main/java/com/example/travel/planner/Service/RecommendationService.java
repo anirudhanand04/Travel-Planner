@@ -2,21 +2,14 @@ package com.example.travel.planner.Service;
 
 import com.example.travel.planner.Model.Activity;
 import com.example.travel.planner.Model.Destination;
-import com.example.travel.planner.Model.Trip;
 import com.example.travel.planner.Model.User;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
