@@ -28,7 +28,7 @@ public class RecommendationService {
         
         List<Destination> recommendations = new ArrayList<>();
         
-        // Mock destinations based on preferences
+        
         if (preferences.toLowerCase().contains("beach")) {
             Destination destination = new Destination();
             destination.setCity("Bali");
